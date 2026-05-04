@@ -1,0 +1,26 @@
+[gd_scene format=3 uid="uid://cvasfpqul6ofs"]
+
+[ext_resource type="Script" uid="uid://cc4k3iyv7dl1x" path="res://camera_3d.gd" id="1_i7qlj"]
+[ext_resource type="Script" uid="uid://csd6iy67602b5" path="res://player_car_1.gd" id="1_kxb65"]
+[ext_resource type="PackedScene" uid="uid://bkp66b7v56bkv" path="res://assets/dacia_logan_low_poly.glb" id="1_ngt2l"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_kxb65"]
+size = Vector3(1.8291016, 1.3995361, 0.6965332)
+
+[node name="PlayerCar1" type="CharacterBody3D" unique_id=607766510]
+script = ExtResource("1_kxb65")
+
+[node name="Sketchfab_Scene" parent="." unique_id=1071353893 instance=ExtResource("1_ngt2l")]
+transform = Transform3D(0.3, 0, 0, 0, 0.3, 0, 0, 0, 0.3, 0, 0, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=442122172]
+transform = Transform3D(0.6, 0, 0, 0, 0.6, 0, 0, 0, 0.6, -0.036517322, 0.1020138, 0.018695068)
+shape = SubResource("BoxShape3D_kxb65")
+
+[node name="Camera3D" type="Camera3D" parent="." unique_id=627358284]
+transform = Transform3D(-0.08193832, 0, -0.9966374, 0, 1, 0, 0.9966374, 0, -0.08193832, -0.9834975, 0.66647816, -0.05556518)
+current = true
+fov = 110.1
+script = ExtResource("1_i7qlj")
+
+[node name="CameraTarget" type="Marker3D" parent="." unique_id=1050218297]

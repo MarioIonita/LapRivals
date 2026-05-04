@@ -1,0 +1,8 @@
+.env
+__pycache__/
+venv/
+.vscode
+.godot/
+*.translation
+node_modules/
+*.log
