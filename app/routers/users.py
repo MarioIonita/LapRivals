@@ -82,14 +82,19 @@ def get_current_user(token: str = Depends(oauth2_scheme)):
         headers={"WWW-Authenticate": "Bearer"},
     )
     try:
+        algorithm = os.getenv("ALGORITHM", "HS256")
+        
         payload = jwt.decode(
             token,
             os.getenv("SECRET_KEY"),
-            algorithms=[os.getenv("ALGORITHM")],
+            algorithms=[algorithm],
         )
         user_id: str = payload.get("sub")
         if user_id is None:
+            print("  [Auth Error]: Sub (user_id) lipseste din token payload!")
             raise credentials_exception
+            
         return int(user_id)
-    except InvalidTokenError:
+    except InvalidTokenError as e:
+        print(f"  [Auth Error]: Token-ul noului utilizator a fost respins! Motiv: {e}")
         raise credentials_exception

@@ -6,7 +6,6 @@ enum GameMode { TIME_TRIAL, SINGLE_PLAYER, MULTIPLAYER }
 var current_mode: GameMode = GameMode.TIME_TRIAL
 var current_track_id: int = 101
 
-# --- THE FIX: Folosim un dictionar dinamic pentru a ocoli cache-ul ---
 var session: Dictionary = {
 	"token": "",
 	"user_id": 0

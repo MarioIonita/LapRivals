@@ -4,6 +4,7 @@ extends Node3D
 
 var telemetry_data: Array = []
 var is_playing: bool = false
+var speed_multiplier: float = 1.0 
 var current_time: float = 0.0
 var current_frame_index: int = 0
 
@@ -11,13 +12,26 @@ var is_download_complete: bool = false
 var is_race_triggered: bool = false
 
 func _ready():
-	if GameManager.current_mode != GameManager.GameMode.TIME_TRIAL:
+	# Dacă suntem în Multiplayer, dezactivăm instanța imediat
+	if GameManager.current_mode == GameManager.GameMode.MULTIPLAYER:
 		queue_free()
 		return
 
-	# Conectăm semnalul global de start
+	# Conectăm semnalul global pentru pornirea cursei
 	GameManager.race_started.connect(_on_race_started_signal)
+	
+	# Dacă a fost spawnat ca bot din circuit (are deja telemetria), nu mai descărcăm nimic
+	if is_download_complete:
+		print("Ghost Car log : Spawned as a bot ")
+		return 
 
+	# Dacă suntem în Single Player, această instanță nativă (gri) se șterge 
+	# pentru a lăsa loc boților din tabelă
+	if GameManager.current_mode == GameManager.GameMode.SINGLE_PLAYER:
+		queue_free()
+		return
+		
+	# Flow standard pentru Time Trial: descărcăm Personal Best-ul
 	await get_tree().create_timer(0.5).timeout 
 	network_client.request_completed.connect(_on_download_completed)
 	download_ghost_data(GameManager.current_track_id)
@@ -34,14 +48,24 @@ func _on_download_completed(result: int, response_code: int, headers: PackedStri
 			telemetry_data = json["telemetry"]
 			is_download_complete = true
 			
-			# Poziționăm fantoma vizual la linia de start (cadrul 0) în stare de așteptare
+			# Sincronizăm poziția pe grila de start (cadrul 0) în așteptarea player-ului
 			if telemetry_data.size() > 0:
 				_apply_frame(telemetry_data[0])
 			
-			# Dacă jucătorul a plecat deja în timp ce descărcam, pornim playback-ul direct
+			# Dacă player-ul a plecat deja în timp ce se descărcau datele, pornim instant
 			if is_race_triggered:
 				start_playback()
+				
+	elif response_code == 401:
+		print("EROARE CRITICĂ REȚEA: Noul utilizator este REFUZAT de server (401 Unauthorized)! Verifică token-ul în GameManager.")
+		queue_free()
+		
 	elif response_code == 404:
+		print("Ghost Car log: User-ul nu are curse salvate încă (404 Not Found).")
+		queue_free()
+		
+	else:
+		print("LOG [GhostCar]: Serverul a răspuns cu un cod netratat: ", response_code)
 		queue_free()
 
 func _on_race_started_signal():
@@ -51,16 +75,16 @@ func _on_race_started_signal():
 
 func start_playback():
 	if telemetry_data.size() < 2: return
-	current_time = 0.0 # <--- Sincronizare perfectă cu HUD-ul (0.0)
+	current_time = 0.0 
 	current_frame_index = 0
 	is_playing = true
 
 func _process(delta: float):
 	if not is_playing: return
 	
-	current_time += delta
+	current_time += delta * speed_multiplier
 	
-	# Căutăm cadrele între care ne aflăm în funcție de current_time
+	# Căutăm cadrele între care ne aflăm în funcție de timpul curent al simulării
 	while current_frame_index < telemetry_data.size() - 1 and telemetry_data[current_frame_index + 1].t < current_time:
 		current_frame_index += 1
 		
@@ -68,7 +92,7 @@ func _process(delta: float):
 		is_playing = false
 		return
 		
-	# Interpolare liniară (LERP/SLERP) pentru mișcare fluidă între cadre
+	# Interpolare liniară (LERP/SLERP) pentru mișcare fluidă între cadrele discretizate
 	var frame_A = telemetry_data[current_frame_index]
 	var frame_B = telemetry_data[current_frame_index + 1]
 	
@@ -85,7 +109,24 @@ func _process(delta: float):
 	global_position = pos_A.lerp(pos_B, alpha)
 	quaternion = quat_A.slerp(quat_B, alpha)
 
-# Funcție utilitară pentru a seta poziția inițială
 func _apply_frame(frame: Dictionary):
 	global_position = Vector3(frame.px, frame.py, frame.pz)
 	quaternion = Quaternion(frame.rx, frame.ry, frame.rz, frame.rw)
+	
+func set_car_color(new_color: Color) -> void:
+	var material = StandardMaterial3D.new()
+	material.albedo_color = new_color
+	material.metallic = 0.6
+	material.roughness = 0.2
+	
+	if has_node("Sketchfab_Scene"):
+		_apply_material_recursive($Sketchfab_Scene, material)
+	else:
+		print("No SketchFab node for coloring.")
+
+func _apply_material_recursive(current_node: Node, mat: Material) -> void:
+	if current_node is MeshInstance3D:
+		current_node.set_surface_override_material(0, mat)
+		
+	for child in current_node.get_children():
+		_apply_material_recursive(child, mat)

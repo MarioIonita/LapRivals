@@ -38,7 +38,7 @@ class RaceResultsDB(Base):
     user_id = Column(Integer, ForeignKey("users.id"))
     track_id = Column(Integer, index = True)
     final_time = Column(Float)
-    date_achieved = Column(DateTime, default = datetime.datetime.now())
+    date_achieved = Column(DateTime, default = datetime.datetime.now)
     game_mode = Column(String)
 
 class TelemetryDataDB(Base):
