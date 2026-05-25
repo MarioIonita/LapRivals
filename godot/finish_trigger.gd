@@ -23,6 +23,7 @@ func _on_body_entered(body: Node3D) -> void:
 			if telemetry_client:
 				if final_time > 12:
 					telemetry_client.send_telemetry_data(101, final_time, raw_telemetry)
+					hud.show_results(final_time)
 			
 			hud.start_race()
 			masina.start_recording()
