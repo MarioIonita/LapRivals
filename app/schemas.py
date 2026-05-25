@@ -1,4 +1,4 @@
-from pydantic import BaseModel 
+from pydantic import BaseModel,Field 
 from typing import List 
 
 class TelemetryFrame(BaseModel):
@@ -11,7 +11,11 @@ class TelemetryFrame(BaseModel):
     rz : float 
     rw : float 
 class RaceUpload(BaseModel):
-    user_id : int 
     track_id : int 
     final_time : float 
+    game_mode : str 
     telemetry : List[TelemetryFrame]
+
+class CreateUser(BaseModel):
+    username: str = Field(min_length=3, max_length=50)
+    password: str = Field(min_length=6, max_length=70)

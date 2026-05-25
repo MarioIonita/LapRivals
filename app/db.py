@@ -19,10 +19,18 @@ SessionLocal = sessionmaker(autoflush=False,autocommit = False, bind = engine)
 
 Base = declarative_base()
 
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db 
+    finally: 
+        db.close()
+
 class UserDB(Base):
     __tablename__ = "users"
     id = Column(Integer, primary_key=True, index = True)
     username = Column(String, unique=True, index = True)
+    password = Column(String)
 
 class RaceResultsDB(Base):
     __tablename__ = "race_results"
@@ -31,6 +39,7 @@ class RaceResultsDB(Base):
     track_id = Column(Integer, index = True)
     final_time = Column(Float)
     date_achieved = Column(DateTime, default = datetime.datetime.now())
+    game_mode = Column(String)
 
 class TelemetryDataDB(Base):
     __tablename__ = "telemetry_data"

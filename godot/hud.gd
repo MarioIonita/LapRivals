@@ -1,6 +1,6 @@
 extends CanvasLayer
 
-@onready var timer_label: Label = $TimerLabel # Asigură-te că numele coincide cu cel din ierarhie
+@onready var timer_label: Label = $TimerLabel 
 
 var time_elapsed: float = 0.0
 var is_racing: bool = false

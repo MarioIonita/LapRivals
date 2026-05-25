@@ -24,3 +24,5 @@ fov = 110.1
 script = ExtResource("1_i7qlj")
 
 [node name="CameraTarget" type="Marker3D" parent="." unique_id=1050218297]
+
+[editable path="Sketchfab_Scene"]

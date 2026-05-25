@@ -11,9 +11,13 @@ config_version=5
 [application]
 
 config/name="Lap Rivals"
-run/main_scene="uid://bkm1qm78x1w5t"
+run/main_scene="uid://b16mn47igv363"
 config/features=PackedStringArray("4.6", "Forward Plus")
 config/icon="res://icon.svg"
+
+[autoload]
+
+GameManager="*uid://bieqraxjwcbb6"
 
 [physics]
 

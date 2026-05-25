@@ -1,0 +1,90 @@
+[gd_scene format=3 uid="uid://sxksol5nmrlj"]
+
+[ext_resource type="Script" uid="uid://k3eud4tal6fn" path="res://ghost_car.gd" id="1_q72oh"]
+[ext_resource type="PackedScene" uid="uid://bkp66b7v56bkv" path="res://assets/dacia_logan_low_poly.glb" id="2_e0083"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_owr4i"]
+transparency = 1
+albedo_color = Color(0.53333336, 0.5176471, 0.57254905, 1)
+metallic = 1.0
+emission_enabled = true
+emission_energy_multiplier = 1.5
+
+[node name="GhostCar" type="Node3D" unique_id=876453977]
+script = ExtResource("1_q72oh")
+
+[node name="Sketchfab_Scene" parent="." unique_id=995819148 instance=ExtResource("2_e0083")]
+transform = Transform3D(0.3, 0, 0, 0, 0.3, 0, 0, 0, 0.3, 0, 0, 0)
+
+[node name="Object_7" parent="Sketchfab_Scene/Sketchfab_model/root/GLTF_SceneRootNode/Armature_20/GLTF_created_0/Skeleton3D" parent_id_path=PackedInt32Array(995819148, 800950502) index="0" unique_id=1340205986]
+surface_material_override/0 = SubResource("StandardMaterial3D_owr4i")
+
+[node name="Object_8" parent="Sketchfab_Scene/Sketchfab_model/root/GLTF_SceneRootNode/Armature_20/GLTF_created_0/Skeleton3D" parent_id_path=PackedInt32Array(995819148, 800950502) index="1" unique_id=2144861362]
+surface_material_override/0 = SubResource("StandardMaterial3D_owr4i")
+
+[node name="Object_9" parent="Sketchfab_Scene/Sketchfab_model/root/GLTF_SceneRootNode/Armature_20/GLTF_created_0/Skeleton3D" parent_id_path=PackedInt32Array(995819148, 800950502) index="2" unique_id=1025388663]
+surface_material_override/0 = SubResource("StandardMaterial3D_owr4i")
+
+[node name="Object_10" parent="Sketchfab_Scene/Sketchfab_model/root/GLTF_SceneRootNode/Armature_20/GLTF_created_0/Skeleton3D" parent_id_path=PackedInt32Array(995819148, 800950502) index="3" unique_id=602629296]
+surface_material_override/0 = SubResource("StandardMaterial3D_owr4i")
+
+[node name="Object_11" parent="Sketchfab_Scene/Sketchfab_model/root/GLTF_SceneRootNode/Armature_20/GLTF_created_0/Skeleton3D" parent_id_path=PackedInt32Array(995819148, 800950502) index="4" unique_id=735471609]
+surface_material_override/0 = SubResource("StandardMaterial3D_owr4i")
+
+[node name="Object_13" parent="Sketchfab_Scene/Sketchfab_model/root/GLTF_SceneRootNode/Armature_20/GLTF_created_0/Skeleton3D" parent_id_path=PackedInt32Array(995819148, 800950502) index="5" unique_id=1933573455]
+surface_material_override/0 = SubResource("StandardMaterial3D_owr4i")
+
+[node name="Object_14" parent="Sketchfab_Scene/Sketchfab_model/root/GLTF_SceneRootNode/Armature_20/GLTF_created_0/Skeleton3D" parent_id_path=PackedInt32Array(995819148, 800950502) index="6" unique_id=552645873]
+surface_material_override/0 = SubResource("StandardMaterial3D_owr4i")
+
+[node name="Object_15" parent="Sketchfab_Scene/Sketchfab_model/root/GLTF_SceneRootNode/Armature_20/GLTF_created_0/Skeleton3D" parent_id_path=PackedInt32Array(995819148, 800950502) index="7" unique_id=467151873]
+surface_material_override/0 = SubResource("StandardMaterial3D_owr4i")
+
+[node name="Object_17" parent="Sketchfab_Scene/Sketchfab_model/root/GLTF_SceneRootNode/Armature_20/GLTF_created_0/Skeleton3D" parent_id_path=PackedInt32Array(995819148, 800950502) index="8" unique_id=1749928802]
+surface_material_override/0 = SubResource("StandardMaterial3D_owr4i")
+
+[node name="Object_18" parent="Sketchfab_Scene/Sketchfab_model/root/GLTF_SceneRootNode/Armature_20/GLTF_created_0/Skeleton3D" parent_id_path=PackedInt32Array(995819148, 800950502) index="9" unique_id=1713816712]
+surface_material_override/0 = SubResource("StandardMaterial3D_owr4i")
+
+[node name="Object_19" parent="Sketchfab_Scene/Sketchfab_model/root/GLTF_SceneRootNode/Armature_20/GLTF_created_0/Skeleton3D" parent_id_path=PackedInt32Array(995819148, 800950502) index="10" unique_id=2066106200]
+surface_material_override/0 = SubResource("StandardMaterial3D_owr4i")
+
+[node name="Object_21" parent="Sketchfab_Scene/Sketchfab_model/root/GLTF_SceneRootNode/Armature_20/GLTF_created_0/Skeleton3D" parent_id_path=PackedInt32Array(995819148, 800950502) index="11" unique_id=250919845]
+surface_material_override/0 = SubResource("StandardMaterial3D_owr4i")
+
+[node name="Object_22" parent="Sketchfab_Scene/Sketchfab_model/root/GLTF_SceneRootNode/Armature_20/GLTF_created_0/Skeleton3D" parent_id_path=PackedInt32Array(995819148, 800950502) index="12" unique_id=477645367]
+surface_material_override/0 = SubResource("StandardMaterial3D_owr4i")
+
+[node name="Object_23" parent="Sketchfab_Scene/Sketchfab_model/root/GLTF_SceneRootNode/Armature_20/GLTF_created_0/Skeleton3D" parent_id_path=PackedInt32Array(995819148, 800950502) index="13" unique_id=1262120676]
+surface_material_override/0 = SubResource("StandardMaterial3D_owr4i")
+
+[node name="Object_25" parent="Sketchfab_Scene/Sketchfab_model/root/GLTF_SceneRootNode/Armature_20/GLTF_created_0/Skeleton3D" parent_id_path=PackedInt32Array(995819148, 800950502) index="14" unique_id=1218553393]
+surface_material_override/0 = SubResource("StandardMaterial3D_owr4i")
+
+[node name="Object_26" parent="Sketchfab_Scene/Sketchfab_model/root/GLTF_SceneRootNode/Armature_20/GLTF_created_0/Skeleton3D" parent_id_path=PackedInt32Array(995819148, 800950502) index="15" unique_id=1846912708]
+surface_material_override/0 = SubResource("StandardMaterial3D_owr4i")
+
+[node name="Object_27" parent="Sketchfab_Scene/Sketchfab_model/root/GLTF_SceneRootNode/Armature_20/GLTF_created_0/Skeleton3D" parent_id_path=PackedInt32Array(995819148, 800950502) index="16" unique_id=1251187869]
+surface_material_override/0 = SubResource("StandardMaterial3D_owr4i")
+
+[node name="Object_29" parent="Sketchfab_Scene/Sketchfab_model/root/GLTF_SceneRootNode/Armature_20/GLTF_created_0/Skeleton3D" parent_id_path=PackedInt32Array(995819148, 800950502) index="17" unique_id=1053661522]
+surface_material_override/0 = SubResource("StandardMaterial3D_owr4i")
+
+[node name="Object_30" parent="Sketchfab_Scene/Sketchfab_model/root/GLTF_SceneRootNode/Armature_20/GLTF_created_0/Skeleton3D" parent_id_path=PackedInt32Array(995819148, 800950502) index="18" unique_id=4517673]
+surface_material_override/0 = SubResource("StandardMaterial3D_owr4i")
+
+[node name="Object_32" parent="Sketchfab_Scene/Sketchfab_model/root/GLTF_SceneRootNode/Armature_20/GLTF_created_0/Skeleton3D" parent_id_path=PackedInt32Array(995819148, 800950502) index="19" unique_id=1852252946]
+surface_material_override/0 = SubResource("StandardMaterial3D_owr4i")
+
+[node name="Object_34" parent="Sketchfab_Scene/Sketchfab_model/root/GLTF_SceneRootNode/Armature_20/GLTF_created_0/Skeleton3D" parent_id_path=PackedInt32Array(995819148, 800950502) index="20" unique_id=569458619]
+surface_material_override/0 = SubResource("StandardMaterial3D_owr4i")
+
+[node name="Object_36" parent="Sketchfab_Scene/Sketchfab_model/root/GLTF_SceneRootNode/Armature_20/GLTF_created_0/Skeleton3D" parent_id_path=PackedInt32Array(995819148, 800950502) index="21" unique_id=860082059]
+surface_material_override/0 = SubResource("StandardMaterial3D_owr4i")
+
+[node name="Object_38" parent="Sketchfab_Scene/Sketchfab_model/root/GLTF_SceneRootNode/Armature_20/GLTF_created_0/Skeleton3D" parent_id_path=PackedInt32Array(995819148, 800950502) index="22" unique_id=1738235869]
+surface_material_override/0 = SubResource("StandardMaterial3D_owr4i")
+
+[node name="NetworkClient" type="HTTPRequest" parent="." unique_id=653291661]
+
+[editable path="Sketchfab_Scene"]
