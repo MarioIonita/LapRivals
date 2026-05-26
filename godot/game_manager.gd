@@ -2,7 +2,7 @@ extends Node
 
 signal race_started
 enum GameMode { TIME_TRIAL, SINGLE_PLAYER, MULTIPLAYER }
-
+# hardcoded to prevent crashes from null refences 
 var current_mode: GameMode = GameMode.TIME_TRIAL
 var current_track_id: int = 101
 

@@ -12,26 +12,20 @@ var is_download_complete: bool = false
 var is_race_triggered: bool = false
 
 func _ready():
-	# Dacă suntem în Multiplayer, dezactivăm instanța imediat
 	if GameManager.current_mode == GameManager.GameMode.MULTIPLAYER:
-		queue_free()
+		set_process(false)
+		set_physics_process(false)
 		return
-
-	# Conectăm semnalul global pentru pornirea cursei
 	GameManager.race_started.connect(_on_race_started_signal)
 	
-	# Dacă a fost spawnat ca bot din circuit (are deja telemetria), nu mai descărcăm nimic
 	if is_download_complete:
 		print("Ghost Car log : Spawned as a bot ")
 		return 
 
-	# Dacă suntem în Single Player, această instanță nativă (gri) se șterge 
-	# pentru a lăsa loc boților din tabelă
 	if GameManager.current_mode == GameManager.GameMode.SINGLE_PLAYER:
 		queue_free()
 		return
 		
-	# Flow standard pentru Time Trial: descărcăm Personal Best-ul
 	await get_tree().create_timer(0.5).timeout 
 	network_client.request_completed.connect(_on_download_completed)
 	download_ghost_data(GameManager.current_track_id)
@@ -48,24 +42,22 @@ func _on_download_completed(result: int, response_code: int, headers: PackedStri
 			telemetry_data = json["telemetry"]
 			is_download_complete = true
 			
-			# Sincronizăm poziția pe grila de start (cadrul 0) în așteptarea player-ului
 			if telemetry_data.size() > 0:
 				_apply_frame(telemetry_data[0])
 			
-			# Dacă player-ul a plecat deja în timp ce se descărcau datele, pornim instant
 			if is_race_triggered:
 				start_playback()
 				
 	elif response_code == 401:
-		print("EROARE CRITICĂ REȚEA: Noul utilizator este REFUZAT de server (401 Unauthorized)! Verifică token-ul în GameManager.")
+		print("Server declined new user (401 Unauthorized)!")
 		queue_free()
 		
 	elif response_code == 404:
-		print("Ghost Car log: User-ul nu are curse salvate încă (404 Not Found).")
+		print("Ghost Car log: No races yet (404 Not Found).")
 		queue_free()
 		
 	else:
-		print("LOG [GhostCar]: Serverul a răspuns cu un cod netratat: ", response_code)
+		print("LOG [GhostCar]: Server response code ", response_code)
 		queue_free()
 
 func _on_race_started_signal():
@@ -84,7 +76,6 @@ func _process(delta: float):
 	
 	current_time += delta * speed_multiplier
 	
-	# Căutăm cadrele între care ne aflăm în funcție de timpul curent al simulării
 	while current_frame_index < telemetry_data.size() - 1 and telemetry_data[current_frame_index + 1].t < current_time:
 		current_frame_index += 1
 		
@@ -92,7 +83,6 @@ func _process(delta: float):
 		is_playing = false
 		return
 		
-	# Interpolare liniară (LERP/SLERP) pentru mișcare fluidă între cadrele discretizate
 	var frame_A = telemetry_data[current_frame_index]
 	var frame_B = telemetry_data[current_frame_index + 1]
 	

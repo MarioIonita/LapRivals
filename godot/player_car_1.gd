@@ -12,6 +12,20 @@ var is_recording: bool = false
 var telemetry_data: Array = []
 var telemetry_time = 0.0
 
+func _ready() -> void:
+	print(">>> [DEBUG INIT] The car has spawned! GameManager.current_mode = ", GameManager.current_mode)
+	print(">>> [DEBUG INIT] GameManager.session = ", GameManager.session)
+	if GameManager.current_mode == GameManager.GameMode.MULTIPLAYER:
+		WSClient.connect_to_server(GameManager.session["user_id"])
+		
+		var tick_timer = Timer.new()
+		tick_timer.wait_time = 0.05
+		tick_timer.autostart = true
+		tick_timer.timeout.connect(_on_multiplayer_tick)
+		add_child(tick_timer)
+		
+		print("[PlayerCar] Multiplayer socket and 20Hz tickrate initialized.")
+
 func _physics_process(delta: float) -> void:
 	if not is_on_floor():
 		velocity.y -= gravity * delta
@@ -36,7 +50,6 @@ func _physics_process(delta: float) -> void:
 		velocity.y = jump_impulse + boost
 
 	if is_recording:
-		# --- MODIFICARE 1: Incrementăm timpul relativ al cursei cu delta time ---
 		telemetry_time += delta
 		record_telemetry_frame()
 
@@ -46,17 +59,31 @@ func start_recording() -> void:
 	telemetry_time = 0.0
 	telemetry_data.clear()
 	is_recording = true
+	print("[PlayerCar] Telemetry recording started.")
 
 func stop_recording() -> Array:
 	is_recording = false
+	print("[PlayerCar] Telemetry recording stopped. Total frames: ", telemetry_data.size())
 	return telemetry_data
 
 func record_telemetry_frame() -> void:
 	var rotation_quat = global_transform.basis.get_rotation_quaternion()
 	var frame = {
-		# --- MODIFICARE 2: Salvăm timpul relativ (telemetry_time) în loc de cel absolut ---
 		"t": telemetry_time,
 		"px": global_position.x, "py": global_position.y, "pz": global_position.z,
 		"rx": rotation_quat.x, "ry": rotation_quat.y, "rz": rotation_quat.z, "rw": rotation_quat.w
 	}
 	telemetry_data.append(frame)
+
+func _on_multiplayer_tick() -> void:
+	var rotation_quat = global_transform.basis.get_rotation_quaternion()
+	var my_state = {
+		"px": global_position.x,
+		"py": global_position.y,
+		"pz": global_position.z,
+		"rx": rotation_quat.x,
+		"ry": rotation_quat.y,
+		"rz": rotation_quat.z,
+		"rw": rotation_quat.w
+	}
+	WSClient.send_data(my_state)

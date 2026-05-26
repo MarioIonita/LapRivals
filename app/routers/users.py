@@ -91,10 +91,10 @@ def get_current_user(token: str = Depends(oauth2_scheme)):
         )
         user_id: str = payload.get("sub")
         if user_id is None:
-            print("  [Auth Error]: Sub (user_id) lipseste din token payload!")
+            print("  [Auth Error]: User_id not found in token payload!")
             raise credentials_exception
             
         return int(user_id)
     except InvalidTokenError as e:
-        print(f"  [Auth Error]: Token-ul noului utilizator a fost respins! Motiv: {e}")
+        print(f"  [Auth Error]: Token denied! Reason: {e}")
         raise credentials_exception

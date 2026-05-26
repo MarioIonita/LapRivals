@@ -1,5 +1,5 @@
 from fastapi import FastAPI 
-from app.routers import race, users
+from app.routers import race, users, multiplayer
 from app.db import SessionLocal, UserDB
 from contextlib import asynccontextmanager 
 
@@ -29,3 +29,4 @@ app = FastAPI(title="LapRivals API", lifespan=lifespan)
 
 app.include_router(race.router)
 app.include_router(users.router)
+app.include_router(multiplayer.router)

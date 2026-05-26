@@ -23,11 +23,9 @@ def process_race_data(
     print(f"-> [DB UPLOAD ATTEMPT]: User: {current_user_id}, Track: {race_data.track_id}, Time: {race_data.final_time}")
     
     if race_data.final_time < 12.0:
-        raise HTTPException(status_code=406, detail="Timp invalid. Posibil cheat.")
+        raise HTTPException(status_code=406, detail="Invalid Time. Pls dont cheat.")
 
     try:
-        # Încercăm să salvăm modul trimis, dar dacă Postgres strâmbă din nas, 
-        # avem fallback pe "SINGLE_PLAYER" (pe care tabela îl acceptă sigur datorită seed-ului)
         mode_to_save = race_data.game_mode if race_data.game_mode else "SINGLE_PLAYER"
         
         new_result = RaceResultsDB( 
@@ -45,21 +43,21 @@ def process_race_data(
         db.add(new_telemetry)
         db.commit()
         
-        print(f"   [DB SUCCESS]: Inserare reușită! ID cursă nouă: {new_result.id}")
-        return {"status": "success", "message": "Date salvate", "id": new_result.id}
+        print(f"   [DB SUCCESS]: Successful insertion! New race ID: {new_result.id}")
+        return {"status": "success", "message": "Saved Data", "id": new_result.id}
 
     except SQLAlchemyError as e:
-        db.rollback() # Curățăm tranzacția blocată în Postgres
-        print(f"!!! [DB CRITICAL ERROR]: Postgres a REFUZAT salvarea! Motivul exact: {e}")
+        db.rollback() 
+        print(f"!!! [DB CRITICAL ERROR]: Postgres denied the save! Reason: {e}")
         
-        # PLAN B: Dacă tipul Enum din DB a crăpat, forțăm inserarea cu un mod pe care îl știm valid
+       
         try:
-            print("   [DB RETRY]: Încercăm salvarea forțată cu game_mode='SINGLE_PLAYER'...")
+            print("   [DB RETRY]: Forced insertion with game_mode='SINGLE_PLAYER'...")
             new_result = RaceResultsDB( 
                 user_id=current_user_id,
                 track_id=race_data.track_id, 
                 final_time=race_data.final_time,
-                game_mode="SINGLE_PLAYER" # Fallback garantat de seed
+                game_mode="SINGLE_PLAYER" # Seed fallback 
             )
             db.add(new_result)
             db.commit()
@@ -70,19 +68,18 @@ def process_race_data(
             db.add(new_telemetry)
             db.commit()
             
-            print(f"   [DB RETRY SUCCESS]: Salvare reușită prin fallback!")
-            return {"status": "success", "message": "Date salvate via fallback", "id": new_result.id}
+            print(f"   [DB RETRY SUCCESS]: Saved with fallback!")
+            return {"status": "success", "message": "Saved data via fallback", "id": new_result.id}
             
         except SQLAlchemyError as e_retry:
             db.rollback()
-            print(f"!!! [DB FATAL]: Nici fallback-ul n-a mers. Eroare: {e_retry}")
+            print(f"!!! [DB FATAL]: Fallback error: {e_retry}")
             raise HTTPException(status_code=500, detail=f"Database execution failed: {str(e_retry)}")
 @router.get("/get_ghost/{track_id}")
 def get_ghost(track_id: int, db: Session = Depends(get_db), current_user_id: int = Depends(get_current_user)):
     print(f"-> Personal Ghost requested for user {current_user_id} on track {track_id}...")
     
-    # --- OPTIMIZARE CRITICĂ: Eliminat filtrul rigid pe game_mode ---
-    # Căutăm cea mai rapidă cursă scoasă de ACEST user, pe ACEST traseu, eliminând riscul de typo din Godot
+    
     best_race = db.query(RaceResultsDB).filter(
         RaceResultsDB.track_id == track_id,
         RaceResultsDB.user_id == current_user_id
